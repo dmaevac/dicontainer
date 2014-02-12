@@ -1,6 +1,6 @@
 var
   should = require('should'),
-  Container = require('./index.js');
+  Container = require('./dist/dicontainer.min.js');
 
 // Some services
 function Formatter(a) {
