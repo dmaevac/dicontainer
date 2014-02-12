@@ -84,5 +84,5 @@ define(function (require, exports, module) {
     }
   };
 
-  exports.Container = Container;
+  module['exports'] = Container;
 });
