@@ -53,7 +53,7 @@ Container.prototype.resolve = function resolve(name) {
   if (name in this._instances) {
     return this._instances[name];
   } else if (name in this._factories) {
-    return this._instances[name] = this.provide(this._factories[name]);
+    return this._instances[name] = provide.call(this, this._factories[name]);
   } else {
     throw new Error(name + ' is not registered in container');
   }

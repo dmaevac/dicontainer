@@ -1,14 +1,14 @@
 #dicontainer
 
-Simple dependency container (with React.js Mixin). Roughly aligns with Angular.js factories, services & providers.
+Simple dependency container (with React.js Mixin)
 
 ###Basic Usage
 
 ####Setup
 
+```
 var Container = require('dicontainer');
 
-```
 var appContainer = new Container();
 ```
 
@@ -46,3 +46,17 @@ MathService.add(1,2);
 
 
 ###React.js Mixin
+
+Attaches service instances to a React class.
+
+Service instances are attached to this.services
+
+```
+var Calculator = React.createClass({
+	
+	mixins: [appContainer.Mixin('MathService')]
+
+	render: function () {
+		this.services.MathService.add()
+	}});
+```
