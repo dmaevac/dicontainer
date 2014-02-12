@@ -1,0 +1,20 @@
+{
+  "name": "dicontainer",
+  "version": "0.0.1",
+  "description": "Simple dependency container",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "DI",
+    "IOC",
+    "container"
+  ],
+  "author": "dve",
+  "license": "BSD-2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SpektrumFM/dicontainer.git"
+  }
+}

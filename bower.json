@@ -1,0 +1,21 @@
+{
+  "name": "dicontainer",
+  "main": "index.js",
+  "version": "0.0.1",
+  "authors": [
+    "dev@spektrum.fm"
+  ],
+  "description": "Simple dependency injection container",
+  "keywords": [
+    "DI",
+    "IOC"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
