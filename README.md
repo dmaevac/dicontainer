@@ -2,6 +2,9 @@
 
 Simple dependency container (with React.js Mixin)
 
+- Handles resolution of dependencies
+- less than 700 bytes gzipped
+
 ###Basic Usage
 
 ####Setup
@@ -54,7 +57,7 @@ Service instances are attached to this.services
 ```
 var Calculator = React.createClass({
 	
-	mixins: [appContainer.Mixin('MathService')]
+	mixins: [appContainer.Mixin('MathService', 'OtherService')]
 
 	render: function () {
 		this.services.MathService.add()
