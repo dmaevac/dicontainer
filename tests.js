@@ -29,6 +29,8 @@ function B(a) {
   this.a = a;
 }
 
+var C = ['AnObject', (function() { var s = function C(a) { this.a = a; }; return s; }())];
+
 // the container
 var appContainer = new Container();
 
@@ -43,6 +45,9 @@ appContainer.register('MathService', MathService);
 
 // registration of a function
 appContainer.register('Minus', function factory() { return function minus(a,b) { return a-b; } } );
+
+// registration of an array based declaration
+appContainer.register('ArrayBased', C);
 
 // registration of an object
 appContainer.register('AnObject', { whatdoyoulike: 'cats' });
@@ -59,3 +64,6 @@ minus(5,3).should.eql(2);
 
 var obj = appContainer.resolve('AnObject');
 obj.whatdoyoulike.should.eql('cats');
+
+var arrayBased = appContainer.resolve('ArrayBased');
+arrayBased.a.should.be.ok;

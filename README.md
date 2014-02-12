@@ -1,9 +1,16 @@
 #dicontainer
 
-Simple dependency container (with React.js Mixin)
+Simple dependency container
 
 - Handles resolution of dependencies
-- less than 700 bytes gzipped
+- Understands Angular.js providers/services (requires $inject syntax)
+- Provides simple React.js Mixin for attaching services
+- Pretty tiny
+
+*TODO*
+
+- Handle circular dependencies
+
 
 ###Basic Usage
 
@@ -61,5 +68,6 @@ var Calculator = React.createClass({
 
 	render: function () {
 		this.services.MathService.add()
-	}});
-```
+	}
+});
+```

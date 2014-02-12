@@ -4,7 +4,7 @@
   "description": "Simple dependency container",
   "main": "index.js",
   "scripts": {
-    "postinstall": "mkdir ./dist && cp ./index.js ./dist/dicontainer.js && uglifyjs ./dist/dicontainer.js -o ./dist/dicontainer.min.js && npm test",
+    "postinstall": "cp ./index.js ./dist/dicontainer.js && uglifyjs ./dist/dicontainer.js -o ./dist/dicontainer.min.js && npm test",
     "test": "node tests.js"
   },
   "keywords": [
