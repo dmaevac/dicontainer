@@ -67,3 +67,6 @@ obj.whatdoyoulike.should.eql('cats');
 
 var arrayBased = appContainer.resolve('ArrayBased');
 arrayBased.a.should.be.ok;
+
+var mixin = appContainer.Mixin('MathService');
+mixin.services.MathService.add(2, 5).should.eql(7);

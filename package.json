@@ -18,8 +18,10 @@
     "type": "git",
     "url": "https://github.com/SpektrumFM/dicontainer.git"
   },
+  "dependencies": {
+    "should": "~3.1.2"
+  },
   "devDependencies": {
-    "should": "~3.1.2",
     "uglifyjs": "~2.3.6"
   }
 }

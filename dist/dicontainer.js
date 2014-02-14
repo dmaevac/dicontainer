@@ -73,20 +73,14 @@ define(function (require, exports, module) {
 
   Container.prototype.Mixin = function () {
     var
-      deps = arguments || [], len = deps.length,
-      container = this;
-    return {
-      componentWillMount: function () {
-        var i = 0, prop;
-        if (!!this[container._mixinPropName]) {
-          return console.warn('Unable to mixin, "' + container._mixinPropName + '" property already exists on class');
-        }
-        this[container._mixinPropName] = prop = {};
-        for (; i < len; i++) {
-          prop[deps[i]] = container.resolve(deps[i]);
-        }
-      }
+      deps = arguments || [], len = deps.length, i = 0,
+      mixin = {}, prop;
+
+    mixin[this._mixinPropName] = prop = {};
+    for (; i < len; i++) {
+      prop[deps[i]] = this.resolve(deps[i]);
     }
+    return mixin;
   };
 
   module['exports'] = Container;
