@@ -26,7 +26,7 @@ define(function (require, exports, module) {
       len, instance,
       i = 0, args = [],
       deps = registration.dependencies,
-      factory = registration.factory;
+      factory = registration.factory.$get || registration.factory;
     if (deps && (len = deps.length)) {
       for (; i < len; i++) {
         args.push(this.resolve(deps[i]));
@@ -50,6 +50,9 @@ define(function (require, exports, module) {
     if (name in this._factories) {
       console.warn(name + ' already registered in container');
     } else {
+      if (!!factory.$get) {
+        return this.register(name, factory.$get, dependencies || factory.$inject);
+      }
       if (_isArray(factory)) {
         dependencies = factory;
         factory = dependencies.pop();

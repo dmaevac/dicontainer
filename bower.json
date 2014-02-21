@@ -3,11 +3,12 @@
   "main": "index.js",
   "version": "0.0.1",
   "authors": [
-    "dev@spektrum.fm"
+    "@dvemac"
   ],
   "description": "Simple dependency injection container",
   "keywords": [
     "DI",
+    "Container",
     "IOC"
   ],
   "license": "MIT",
