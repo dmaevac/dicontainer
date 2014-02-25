@@ -5,37 +5,49 @@ if (typeof exports === 'object' && typeof define !== 'function') {
 }
 define(function (require, exports, module) {
 
-  var _isArray = Array.isArray || function(obj) {
+  var _isArray = Array.isArray || function (obj) {
     return toString.call(obj) === "[object Array]";
   };
 
+  function _noop() {
+  }
+
   function _isFunction(obj) {
     return !!(obj && obj.constructor && obj.call && obj.apply);
-  };
+  }
 
   function _construct(constructor, args) {
     function F() {
       return constructor.apply(this, args);
     }
+
     F.prototype = constructor.prototype;
     return new F();
   }
 
   function _provide(registration) {
     var
-      len, instance,
+      len, instance, providedInstance,
       i = 0, args = [],
       deps = registration.dependencies,
-      factory = registration.factory.$get || registration.factory;
+      cfg = registration.configure,
+      factory = registration.factory;
+
     if (deps && (len = deps.length)) {
       for (; i < len; i++) {
         args.push(this.resolve(deps[i]));
       }
     }
-    instance = !_isFunction(factory)
-      ? factory : (factory.apply(null, args) || _construct(factory, args));
 
-    return instance.$get ? instance.$get.apply(instance, args) : instance;
+    instance = !_isFunction(factory) ? factory
+      : (factory.apply(null, args) || _construct(factory, args));
+
+    if (instance.$get) {
+      cfg(instance);
+      providedInstance = instance.$get.apply(instance, args)
+    }
+
+    return providedInstance || instance;
   };
 
 //  -- API --
@@ -46,19 +58,21 @@ define(function (require, exports, module) {
     this._mixinPropName = mixinPropName || 'services';
   }
 
-  Container.prototype.register = function register(name, factory, dependencies) {
+  Container.prototype.register = function register(name, factory, dependencies, configure) {
     if (name in this._factories) {
       console.warn(name + ' already registered in container');
     } else {
-      if (!!factory.$get) {
-        return this.register(name, factory.$get, dependencies || factory.$inject);
-      }
       if (_isArray(factory)) {
         dependencies = factory;
         factory = dependencies.pop();
       }
+      if (_isFunction(dependencies)) {
+        configure = dependencies;
+        dependencies = null;
+      }
       this._factories[name] = {
         factory: factory,
+        configure: configure || _noop,
         dependencies: dependencies || factory.$inject || []
       };
     }

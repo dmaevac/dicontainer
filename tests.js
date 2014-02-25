@@ -23,40 +23,35 @@ MathService.prototype.prettyAdd = function (a, b) {
 MathService.$inject = ['FormattingService'];
 
 // ServiceProvider
-function SPInject() {
-  this.chips = "yum";
-}
-SPInject.prototype.$get = function (formatter) {
-  return {
-    getFoodDated: function () {
-      return formatter.datePad(this.chips);
-    },
-    getFood: function () {
-      return this.chips;
-    }
-  }
-};
-SPInject.prototype.config = function (opts) {
-  this.chips = opts;
-}
-SPInject.$inject = ['FormattingService'];
 
-function SPArray() {
-  this.chips = "yum";
-}
-SPArray.prototype.$get = ['FormattingService', function (formatter) {
-  return {
-    getFoodDated: function () {
-      return formatter.datePad(this.chips);
-    },
-    getFood: function () {
-      return this.chips;
-    }
+var AccountService = (function () {
+  function AccountService() {
+    var _this = this;
+    this._opts = {
+      url: 'http://localhost'
+    };
+    this.$get = function (formatter) {
+      _this.formatter = formatter;
+      var service = {
+        getUrl: _this.getUrl.bind(_this)
+      };
+
+      return service;
+    };
   }
-}];
-SPArray.prototype.config = function (opts) {
-  this.chips = opts;
-}
+
+  AccountService.prototype.getUrl = function (stub) {
+    return this._opts.url + stub;
+  };
+
+  AccountService.prototype.options = function (opts) {
+    this._opts = opts;
+  };
+
+  AccountService.$inject = ['FormattingService'];
+
+  return AccountService;
+})();
 
 
 // cyclic services
@@ -81,13 +76,12 @@ var appContainer = new Container();
 appContainer.register('A', A);
 //appContainer.register('B', B, ['A']);
 
+
 // registration of a provider
-appContainer.register('SPInject', SPInject, function (provider) {
-  provider.config('yuck');
+appContainer.register('AccountService', AccountService, function (provider) {
+  provider.options({ url: 'base' });
 });
-appContainer.register('SPArray', SPArray, function (provider) {
-  provider.config('yay');
-});
+
 
 // registration of a class
 appContainer.register('FormattingService', Formatter, ['A']);
@@ -125,10 +119,5 @@ arrayBased.a.should.be.ok;
 var mixin = appContainer.Mixin('MathService');
 mixin.services.MathService.add(2, 5).should.eql(7);
 
-var spInjectprovided = appContainer.resolve('SPInject');
-spInjectprovided.getFoodDated().should.be.ok;
-spInjectprovided.getFood().should.eql('yuck');
-
-var spArrayprovided = appContainer.resolve('SPArray');
-spArrayprovided.getFoodDated().should.be.ok;
-spArrayprovided.getFood().should.eql('yay');
+var as = appContainer.resolve('AccountService');
+as.getUrl('food').should.eql('basefood');
