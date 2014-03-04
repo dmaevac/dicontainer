@@ -4,7 +4,7 @@
   "description": "Simple dependency container",
   "main": "index.js",
   "scripts": {
-    "postinstall": "cp ./index.js ./dist/dicontainer.js && uglifyjs ./dist/dicontainer.js -o ./dist/dicontainer.min.js && npm test",
+    "postinstall": "cp ./index.js ./dist/dicontainer.js && ./node_modules/.bin/uglifyjs ./dist/dicontainer.js -o ./dist/dicontainer.min.js && npm test",
     "test": "node tests.js"
   },
   "keywords": [
@@ -19,9 +19,7 @@
     "url": "https://github.com/SpektrumFM/dicontainer.git"
   },
   "dependencies": {
-    "should": "~3.1.2"
-  },
-  "devDependencies": {
-    "uglifyjs": "~2.3.6"
+    "should": "~3.1.2",
+    "uglify-js": "~2.3.6"
   }
 }
