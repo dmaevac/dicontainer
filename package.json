@@ -1,6 +1,6 @@
 {
   "name": "dicontainer",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Simple dependency container",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,8 @@
   "keywords": [
     "DI",
     "IOC",
-    "container"
+    "container",
+    "dependency injection"
   ],
   "author": "@dvemac",
   "license": "MIT",

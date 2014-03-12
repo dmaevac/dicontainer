@@ -1,7 +1,7 @@
 {
   "name": "dicontainer",
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "authors": [
     "@dvemac"
   ],
@@ -9,7 +9,8 @@
   "keywords": [
     "DI",
     "Container",
-    "IOC"
+    "IOC",
+    "dependency injection"
   ],
   "license": "MIT",
   "ignore": [

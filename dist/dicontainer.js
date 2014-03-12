@@ -52,9 +52,10 @@ define(function (require, exports, module) {
 
 //  -- API --
 
-  function Container(mixinPropName) {
+  function Container(mixinPropName, log) {
     this._instances = {};
     this._factories = {};
+    this._log = (log || _noop);
     this._mixinPropName = mixinPropName || 'services';
   }
 
@@ -75,13 +76,16 @@ define(function (require, exports, module) {
         configure: configure || _noop,
         dependencies: dependencies || factory.$inject || []
       };
+      this._log('di', 'registered', name);
     }
   };
 
   Container.prototype.resolve = function resolve(name) {
     if (name in this._instances) {
+      this._log('di', 'resolving', name);
       return this._instances[name];
     } else if (name in this._factories) {
+      this._log('di', 'providing', name);
       return this._instances[name] = _provide.call(this, this._factories[name]);
     } else {
       throw new Error(name + ' is not registered in container');
