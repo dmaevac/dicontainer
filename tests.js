@@ -1,5 +1,5 @@
 var
-  should = require('should'),
+  tape = require('tape'),
   Container = require('./index.js');
 
 // Some services
@@ -53,6 +53,7 @@ var AccountService = (function () {
   return AccountService;
 })();
 
+var likes = { whatdoyoulike: 'cats' };
 
 // cyclic services
 function A(b) {
@@ -62,62 +63,82 @@ function B(a) {
   this.a = a;
 }
 
-var C = ['AnObject', (function () {
-  var s = function C(a) {
-    this.a = a;
-  };
-  return s;
-}())];
-
-// the container
-var appContainer = new Container();
-
-// TODO: registrations with circular dependencies
-appContainer.register('A', A);
-//appContainer.register('B', B, ['A']);
 
 
-// registration of a provider
-appContainer.register('AccountService', AccountService, function (provider) {
-  provider.options({ url: 'base' });
+tape('can create a container', function (t) {
+  t.plan(1);
+  var appContainer = new Container();
+  t.ok(appContainer);
 });
 
-
-// registration of a class
-appContainer.register('FormattingService', Formatter, ['A']);
-appContainer.register('MathService', MathService);
-
-// registration of a function
-appContainer.register('Minus', function factory() {
-  return function minus(a, b) {
-    return a - b;
-  }
+tape('can register and resolve an object', function (t) {
+  t.plan(1);
+  var appContainer = new Container();
+  appContainer.register('AnObject', likes);
+  var o = appContainer.resolve('AnObject');
+  t.equal(o.whatdoyoulike, 'cats');
 });
 
-// registration of an array based declaration
-appContainer.register('ArrayBased', C);
+tape('can register and resolve a function', function (t) {
+  t.plan(1);
+  var appContainer = new Container();
+  appContainer.register('Minus', function factory() {
+    return function minus(a, b) {
+      return a - b;
+    }
+  });
+  var minus = appContainer.resolve('Minus');
+  t.equal(minus(5, 3), 2);
+});
 
-// registration of an object
-appContainer.register('AnObject', { whatdoyoulike: 'cats' });
+tape('can register and resolve a service and its dependencies', function (t) {
+  t.plan(2);
+  var appContainer = new Container();
+  appContainer.register('A', likes);
+  appContainer.register('FormattingService', Formatter, ['A']);
+  var formatter = appContainer.resolve('FormattingService');
+  t.ok(formatter.injectedA);
+  t.equal(formatter.injectedA, likes);
+});
 
-var formatter = appContainer.resolve('FormattingService');
-formatter.injectedA.should.be.ok;
-formatter.injectedA.should.eql(new A());
+tape('can register and resolve a service and call its methods', function (t) {
+  t.plan(1);
+  var appContainer = new Container();
+  appContainer.register('FormattingService', Formatter);
+  appContainer.register('MathService', MathService);
+  var maths = appContainer.resolve('MathService');
+  t.equal(maths.add(2, 5), 7);
+});
 
-var maths = appContainer.resolve('MathService');
-maths.add(2, 5).should.eql(7);
+tape('can register a service via angular style array registration', function (t) {
+  t.plan(1);
+  var appContainer = new Container();
+  appContainer.register('AnObject', likes);
+  var C = ['AnObject', (function () {
+    var s = function C(a) {
+      this.a = a;
+    };
+    return s;
+  }())];
+  appContainer.register('ArrayBased', C);
+  var arrayBased = appContainer.resolve('ArrayBased');
+  t.equal(arrayBased.a.whatdoyoulike, 'cats');
+});
 
-var minus = appContainer.resolve('Minus');
-minus(5, 3).should.eql(2);
+tape('can register an angular style provider that has an instance config function', function (t) {
+  t.plan(1);
+  var appContainer = new Container();
+  appContainer.register('FormattingService', Formatter);
+  appContainer.register('AccountService', AccountService, function (provider) {
+    provider.options({ url: 'base' });
+  });
+  var as = appContainer.resolve('AccountService');
+  t.equal(as.getUrl('food'), 'basefood');
+});
 
-var obj = appContainer.resolve('AnObject');
-obj.whatdoyoulike.should.eql('cats');
-
-var arrayBased = appContainer.resolve('ArrayBased');
-arrayBased.a.should.be.ok;
-
-var mixin = appContainer.Mixin('MathService');
-mixin.services.MathService.add(2, 5).should.eql(7);
-
-var as = appContainer.resolve('AccountService');
-as.getUrl('food').should.eql('basefood');
+tape('errors when registering services with circular dependencies', function (t) {
+  t.plan(1);
+  var appContainer = new Container();
+  appContainer.register('A', A, ['B']);
+  t.throws(appContainer.register.bind(appContainer, 'B', B, ['A']))
+});

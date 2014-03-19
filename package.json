@@ -1,11 +1,12 @@
 {
   "name": "dicontainer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Simple dependency container",
   "main": "index.js",
   "scripts": {
     "postinstall": "cp ./index.js ./dist/dicontainer.js && ./node_modules/.bin/uglifyjs ./dist/dicontainer.js -o ./dist/dicontainer.min.js && npm test",
-    "test": "node tests.js"
+    "test": "./node_modules/.bin/jshint index.js && node tests.js",
+    "test-local": "./node_modules/.bin/zuul --ui tape --local 3111 ./tests.js"
   },
   "keywords": [
     "DI",
@@ -19,8 +20,11 @@
     "type": "git",
     "url": "https://github.com/SpektrumFM/dicontainer.git"
   },
-  "dependencies": {
-    "should": "~3.1.2",
-    "uglify-js": "~2.3.6"
+  "devDependencies": {
+    "uglify-js": "~2.3.6",
+    "tape": "^2.10.2",
+    "mocha": "^1.18.2",
+    "zuul": "^1.5.4",
+    "jshint": "^2.4.4"
   }
 }

@@ -25,6 +25,17 @@ define(function (require, exports, module) {
     return new F();
   }
 
+  function _validate(name, registration) {
+    var i = 0, dep, deps = registration.dependencies, len;
+    if (deps && (len = deps.length)) {
+      for (; i < len; i++) {
+        if ((dep = this._factories[deps[i]]) && !!~dep.dependencies.indexOf(name)) {
+          throw new Error(name + ' registration failed because of circular dependency with "' + deps[i] + '"');
+        }
+      }
+    }
+  }
+
   function _provide(registration) {
     var
       len, instance, providedInstance,
@@ -44,19 +55,16 @@ define(function (require, exports, module) {
 
     if (instance.$get) {
       cfg(instance);
-      providedInstance = instance.$get.apply(instance, args)
+      providedInstance = instance.$get.apply(instance, args);
     }
 
     return providedInstance || instance;
-  };
+  }
 
-//  -- API --
-
-  function Container(mixinPropName, log) {
+  function Container(log) {
     this._instances = {};
     this._factories = {};
-    this._log = (log || _noop);
-    this._mixinPropName = mixinPropName || 'services';
+    this._log = (log || _noop).bind(null, 'di');
   }
 
   Container.prototype.register = function register(name, factory, dependencies, configure) {
@@ -71,22 +79,24 @@ define(function (require, exports, module) {
         configure = dependencies;
         dependencies = null;
       }
-      this._factories[name] = {
+      var registration = {
         factory: factory,
         configure: configure || _noop,
         dependencies: dependencies || factory.$inject || []
       };
-      this._log('di', 'registered', name);
+      _validate.call(this, name, registration);
+      this._factories[name] = registration;
+      this._log('register', name);
     }
   };
 
   Container.prototype.resolve = function resolve(name) {
     if (name in this._instances) {
-      this._log('di', 'resolving', name);
+      this._log('resolve', name);
       return this._instances[name];
     } else if (name in this._factories) {
-      this._log('di', 'providing', name);
-      return this._instances[name] = _provide.call(this, this._factories[name]);
+      this._log('provide', name);
+      return (this._instances[name] = _provide.call(this, this._factories[name]));
     } else {
       throw new Error(name + ' is not registered in container');
     }
@@ -94,15 +104,13 @@ define(function (require, exports, module) {
 
   Container.prototype.Mixin = function () {
     var
-      deps = arguments || [], len = deps.length, i = 0,
-      mixin = {}, prop;
+      deps = arguments || [], mixin = { services: {} };
 
-    mixin[this._mixinPropName] = prop = {};
-    for (; i < len; i++) {
-      prop[deps[i]] = this.resolve(deps[i]);
+    for (var i = 0, len = deps.length; i < len; i++) {
+      mixin.services[deps[i]] = this.resolve(deps[i]);
     }
     return mixin;
   };
 
-  module['exports'] = Container;
+  module.exports = Container;
 });

@@ -1,15 +1,13 @@
 #dicontainer
 
-Simple dependency container
+Tiny dependency container
 
 - Handles resolution of dependencies
-- Understands Angular.js providers/services (requires $inject syntax)
-- Provides simple React.js Mixin for attaching services
-- Pretty tiny
-
-*TODO*
-
-- Handle circular dependencies
+- Lazy instantiation (services arent created until they are needed)
+- Understands Angular.js providers/services/factories/globals
+- Provides simple React.js compatible Mixin for attaching services
+- Tests for circular dependencies
+- less than 1kb (gzipped)
 
 
 ###Basic Usage
@@ -19,12 +17,12 @@ Simple dependency container
 ```
 var Container = require('dicontainer');
 
-var appContainer = new Container();
+var appContainer = new Container(logFunction /* optional */);
 ```
 
 ####Registration
 
-container.register(name, factory);
+`container.register(name, factory /* or service/provider */);`
 
 ```
 
@@ -39,13 +37,20 @@ appContainer.register('MathService', MathService); // Dependencies are read from
 function MathService(other) {}
 MathService.prototype.add = function (a,b) { return a+b; };
 
-appContainer.register('MathService', MathService, ['OtherService']); // Dependencies are specified
+appContainer.register('MathService', MathService, ['OtherService']); // Dependencies are specified as array
+
+// --- or ----
+
+function MathService(other) {}
+MathService.prototype.add = function (a,b) { return a+b; };
+
+appContainer.register('MathService', ['OtherService', MathService]); // Dependencies and service are specified as array
 
 ```
 
 ####Resolution
 
-var instance = container.resolve(name);
+`var instance = container.resolve(name);`
 
 ```
 
@@ -55,9 +60,7 @@ MathService.add(1,2);
 ```
 
 
-###React.js Mixin
-
-Attaches service instances to a React class.
+####Mixin
 
 Service instances are attached to this.services
 
@@ -71,3 +74,12 @@ var Calculator = React.createClass({
 	}
 });
 ```
+
+####Building & testing
+
+```
+npm install // lint, test & compile dist
+npm test // test in terminal
+npm run test-local // run test in browser
+```
+
