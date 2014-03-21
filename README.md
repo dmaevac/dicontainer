@@ -78,7 +78,7 @@ var Calculator = React.createClass({
 ####Building & testing
 
 ```
-npm install // lint, test & compile dist
+npm run build // lint, test & compile dist
 npm test // test in terminal
 npm run test-local // run test in browser
 ```

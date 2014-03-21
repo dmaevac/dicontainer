@@ -1,10 +1,10 @@
 {
   "name": "dicontainer",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Simple dependency container",
   "main": "index.js",
   "scripts": {
-    "postinstall": "cp ./index.js ./dist/dicontainer.js && ./node_modules/.bin/uglifyjs ./dist/dicontainer.js -o ./dist/dicontainer.min.js && npm test",
+    "build": "cp ./index.js ./dist/dicontainer.js && ./node_modules/.bin/uglifyjs ./dist/dicontainer.js -o ./dist/dicontainer.min.js && npm test",
     "test": "./node_modules/.bin/jshint index.js && node tests.js",
     "test-local": "./node_modules/.bin/zuul --ui tape --local 3111 ./tests.js"
   },
