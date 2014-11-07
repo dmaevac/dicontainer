@@ -8,6 +8,7 @@ Tiny dependency container
 - Provides simple React.js compatible Mixin for attaching services
 - Tests for circular dependencies
 - less than 1kb (gzipped)
+- Isomorphic
 
 
 ###Basic Usage
