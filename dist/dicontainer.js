@@ -1,16 +1,20 @@
-if (typeof exports === 'object' && typeof define !== 'function') {
-  var define = function (factory) {
-    factory(require, exports, module);
-  };
-}
-define(function (require, exports, module) {
+(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define([], function() {
+      return (root.Container = factory());
+    });
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.Container = factory();
+  }
+}(this, function(exports, b) {
 
-  var _isArray = Array.isArray || function (obj) {
+  var _isArray = Array.isArray || function(obj) {
     return toString.call(obj) === "[object Array]";
   };
 
-  function _noop() {
-  }
+  function _noop() {}
 
   function _isFunction(obj) {
     return !!(obj && obj.constructor && obj.call && obj.apply);
@@ -26,7 +30,9 @@ define(function (require, exports, module) {
   }
 
   function _validate(name, registration) {
-    var i = 0, dep, deps = registration.dependencies, len;
+    var i = 0,
+      dep, deps = registration.dependencies,
+      len;
     if (deps && (len = deps.length)) {
       for (; i < len; i++) {
         if ((dep = this._factories[deps[i]]) && !!~dep.dependencies.indexOf(name)) {
@@ -39,7 +45,8 @@ define(function (require, exports, module) {
   function _provide(registration) {
     var
       len, instance, providedInstance,
-      i = 0, args = [],
+      i = 0,
+      args = [],
       deps = registration.dependencies,
       cfg = registration.configure,
       factory = registration.factory;
@@ -50,8 +57,7 @@ define(function (require, exports, module) {
       }
     }
 
-    instance = !_isFunction(factory) ? factory
-      : (factory.apply(null, args) || _construct(factory, args));
+    instance = !_isFunction(factory) ? factory : (factory.apply(null, args) || _construct(factory, args));
 
     if (instance.$get) {
       cfg(instance);
@@ -102,9 +108,12 @@ define(function (require, exports, module) {
     }
   };
 
-  Container.prototype.Mixin = function () {
+  Container.prototype.Mixin = function() {
     var
-      deps = arguments || [], mixin = { services: {} };
+      deps = arguments || [],
+      mixin = {
+        services: {}
+      };
 
     for (var i = 0, len = deps.length; i < len; i++) {
       mixin.services[deps[i]] = this.resolve(deps[i]);
@@ -112,5 +121,6 @@ define(function (require, exports, module) {
     return mixin;
   };
 
-  module.exports = Container;
-});
+  return Container;
+
+}));

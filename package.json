@@ -1,6 +1,6 @@
 {
   "name": "dicontainer",
-  "version": "0.3.2",
+  "version": "0.3.0",
   "description": "Simple dependency container",
   "main": "index.js",
   "scripts": {
@@ -21,10 +21,10 @@
     "url": "https://github.com/SpektrumFM/dicontainer.git"
   },
   "devDependencies": {
-    "tape": "^2.10.2",
-    "mocha": "^1.18.2",
-    "zuul": "^1.5.4",
     "jshint": "^2.4.4",
-    "uglifyjs": "^2.3.6"
+    "mocha": "^1.18.2",
+    "tape": "^2.10.2",
+    "uglify-js": "^2.4.15",
+    "zuul": "^1.5.4"
   }
 }
